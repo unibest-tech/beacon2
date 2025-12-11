@@ -25,25 +25,23 @@ import * as echarts from 'echarts'
 import { fetchBeaconData } from '@/api/beacon'
 import type { BeaconData } from '@/api/beacon'
 
-const mainBase = ['main', 'base']
-const mainBaseMerged = ['main+base']
-const BaseTempList = [
-  'base-sard-ui',
-  'base-uv-ui',
-  'base-uview-plus',
-  'base-uview-pro',
-  'base-skiyee-ui',
-  'i18n',
-  'demo',
+const uiLibraryList = [
+  'wot-ui',
+  'uview-pro',
+  'sard-uniapp',
+  'uview-plus',
+  'uv-ui',
+  // 'skiyee-ui',
+  'none',
 ]
 // 定义支持的模板类型
-const TEMPLATE_TYPES = [...mainBase, ...BaseTempList] as const
+const UI_LIBRARY_TYPES = [...uiLibraryList] as const
 
-type TemplateType = (typeof TEMPLATE_TYPES)[number]
+type UiLibraryType = (typeof UI_LIBRARY_TYPES)[number]
 
 // 图表数据格式
 interface ChartDataItem {
-  template: TemplateType
+  uiLibrary: UiLibraryType
   count: number
 }
 
@@ -61,10 +59,10 @@ let chartInstance: echarts.ECharts | null = null
 const processChartData = () => {
   // 初始化统计对象
   // 定义合并后的类别
-  const mergedCategories = [...mainBaseMerged, ...BaseTempList] as const
+  const mergedCategories = [...uiLibraryList] as const
 
   // 初始化统计对象
-  const templateCount: Record<string, number> = mergedCategories.reduce(
+  const uiLibraryCount: Record<string, number> = mergedCategories.reduce(
     (acc, type) => {
       acc[type] = 0
       return acc
@@ -74,19 +72,17 @@ const processChartData = () => {
 
   // 处理数据并合并main和base
   rawData.value.forEach(item => {
-    const template = item.template as TemplateType
-    if (template === 'main' || template === 'base') {
-      templateCount['main+base']++
-    } else if (mergedCategories.some(category => category === template)) {
-      templateCount[template]++
-    }
+    const uiLibrary = item.uiLibrary as UiLibraryType
+    uiLibraryCount[uiLibrary]++
   })
 
   // 转换为图表所需格式
-  chartData.value = Object.entries(templateCount).map(([template, count]) => ({
-    template,
-    count,
-  }))
+  chartData.value = Object.entries(uiLibraryCount).map(
+    ([uiLibrary, count]) => ({
+      uiLibrary,
+      count,
+    }),
+  )
 }
 
 /**
@@ -139,7 +135,7 @@ const updateChart = () => {
     },
     xAxis: {
       type: 'category',
-      data: chartData.value.map(item => item.template),
+      data: chartData.value.map(item => item.uiLibrary),
       axisLabel: {
         rotate: 45,
         interval: 0,

@@ -8,7 +8,7 @@ import { message } from 'ant-design-vue'
 
 // 创建axios实例
 // 接口基础URL（从vite代理迁移至此）
-const API_BASE_URL = 'https://ukw0y1.laf.run'
+const API_BASE_URL = 'https://ukw0y1.laf.run/create-unibest-v3'
 
 const request: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

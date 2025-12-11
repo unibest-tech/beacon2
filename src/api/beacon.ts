@@ -3,15 +3,19 @@ import request from './request'
 // 接口返回类型定义
 export interface BeaconData {
   _id: string
-  template: string
-  duration: number // 单位：秒
-  time: string // 格式：YYYY-MM-DD HH:mm:ss
-  osPlatform?: string // 系统平台（win32/darwin/linux）
+  uiLibrary: string
+  loginStrategy: number // 单位：秒
+  i18n: boolean
+  createAt: string // 格式：YYYY-MM-DD HH:mm:ss
+  cpuModel: string
+  osPlatform: string // 系统平台（win32/darwin/linux）
   nodeVersion?: string
-  cpuModel?: string
-  os?: string
-  unibestVersion?: string
-  unibestVersionGitee?: string
+  totalMem: string
+  cpuArch: string
+  version: string
+  cbVersion: string
+  projectName: string
+  platforms: string[]
 }
 
 export interface ApiResponse<T = any> {
@@ -34,7 +38,7 @@ export async function fetchBeaconData(
   params: QueryParams,
 ): Promise<ApiResponse<BeaconData[]>> {
   const response = await request.get<any, ApiResponse<BeaconData[]>>(
-    '/create-unibest/getBeacon',
+    '/getBeacon',
     {
       params,
     },
@@ -63,7 +67,7 @@ export async function fetchBeaconHourlyData(): Promise<
   ApiResponse<HourlyDateResp>
 > {
   const response = await request.get<any, ApiResponse<HourlyDateResp>>(
-    '/create-unibest/getBeaconByHour',
+    '/getBeaconByHour',
   )
   return response
 }
@@ -71,7 +75,7 @@ export async function fetchBeaconDailyData(): Promise<
   ApiResponse<DailyDateResp>
 > {
   const response = await request.get<any, ApiResponse<DailyDateResp>>(
-    '/create-unibest/getBeaconByDay',
+    '/getBeaconByDay',
   )
   return response
 }

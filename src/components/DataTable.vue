@@ -63,10 +63,7 @@ const columns = [
     dataIndex: 'unibestVersion',
     key: 'unibestVersion',
     customRender: ({ text, record }: { text: string; record: BeaconData }) => {
-      // 早期只有 unibestVersion，中期2个都有
-      // cb@v2.18.5 开始只留了 unibestVersionGitee
-      // cb@v2.18.6 开始只留了 unibestVersion
-      return record.unibestVersion || record.unibestVersionGitee || '--'
+      return record.version || '--'
     },
   },
   {
@@ -79,8 +76,7 @@ const columns = [
     dataIndex: 'os',
     key: 'os',
     customRender: ({ text, record }: { text: string; record: BeaconData }) => {
-      // 之前使用 os 字段，cb@v2.18.5 开始用 osPlatform 替换 os
-      return record.osPlatform || record.os || '--'
+      return record.osPlatform || '--'
     },
   },
   {

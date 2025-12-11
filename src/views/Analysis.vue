@@ -12,7 +12,11 @@
     <a-row :gutter="16">
       <a-col :span="8">
         <a-card>
-          <a-statistic title="今日创建数" :value="todayCount" :value-style="{ color: '#3f8600' }">
+          <a-statistic
+            title="今日创建数"
+            :value="todayCount"
+            :value-style="{ color: '#3f8600' }"
+          >
             <template #prefix>
               <arrow-up-outlined />
             </template>
@@ -21,12 +25,21 @@
       </a-col>
       <a-col :span="8">
         <a-card>
-          <a-statistic title="平均耗时" :value="avgDuration" :precision="2" suffix="秒" />
+          <a-statistic
+            title="平均耗时"
+            :value="avgDuration"
+            :precision="2"
+            suffix="秒"
+          />
         </a-card>
       </a-col>
       <a-col :span="8">
         <a-card>
-          <a-statistic title="总创建数" :value="totalCount" :value-style="{ color: '#cf1322' }" />
+          <a-statistic
+            title="总创建数"
+            :value="totalCount"
+            :value-style="{ color: '#cf1322' }"
+          />
         </a-card>
       </a-col>
     </a-row>
@@ -34,44 +47,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { ArrowUpOutlined } from '@ant-design/icons-vue';
-import dayjs from 'dayjs';
-import { fetchBeaconData } from '@/api/beacon';
-import type { BeaconData } from '@/api/beacon';
+import { ref, onMounted } from 'vue'
+import { ArrowUpOutlined } from '@ant-design/icons-vue'
+import dayjs from 'dayjs'
+import { fetchBeaconData } from '@/api/beacon'
 
-const deadline = ref(Date.now() + 1000 * 60 * 60); // 1小时后
-const todayCount = ref(0);
-const avgDuration = ref(0);
-const totalCount = ref(0);
+const deadline = ref(Date.now() + 1000 * 60 * 60) // 1小时后
+const todayCount = ref(0)
+const avgDuration = ref(0)
+const totalCount = ref(0)
 
 const fetchAnalysisData = async () => {
   try {
-    const res = await fetchBeaconData({ page: 1, pageSize: 1000 });
-    const today = dayjs().format('YYYY-MM-DD');
+    const res = await fetchBeaconData({ page: 1, pageSize: 1000 })
+    const today = dayjs().format('YYYY-MM-DD')
 
     // 计算今日数据
     todayCount.value = res.data.filter(
-      (item) => dayjs(item.time).format('YYYY-MM-DD') === today
-    ).length;
-
-    // 计算平均耗时
-    const totalDuration = res.data.reduce((sum, item) => sum + item.duration, 0);
-    avgDuration.value = totalDuration / res.data.length;
+      item => dayjs(item.createAt).format('YYYY-MM-DD') === today,
+    ).length
 
     // 设置总数
-    totalCount.value = res.total;
+    totalCount.value = res.total
   } catch (error) {
-    console.error('获取分析数据失败:', error);
+    console.error('获取分析数据失败:', error)
   }
-};
+}
 
 const onFinish = () => {
-  fetchAnalysisData();
-  deadline.value = Date.now() + 1000 * 60 * 60; // 重置倒计时
-};
+  fetchAnalysisData()
+  deadline.value = Date.now() + 1000 * 60 * 60 // 重置倒计时
+}
 
 onMounted(() => {
-  fetchAnalysisData();
-});
+  fetchAnalysisData()
+})
 </script>

@@ -59,7 +59,7 @@ const updateOsChart = () => {
 
   const osCount: Record<string, number> = {}
   props.data.forEach(item => {
-    const os = item.os || '未知'
+    const os = item.osPlatform || '未知'
     osCount[os] = (osCount[os] || 0) + 1
   })
 
