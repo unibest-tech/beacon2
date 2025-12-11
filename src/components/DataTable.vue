@@ -54,22 +54,43 @@ const emit = defineEmits<{
 
 const columns = [
   {
-    title: '模板类型',
-    dataIndex: 'template',
-    key: 'template',
+    title: 'UI库',
+    dataIndex: 'uiLibrary',
+    key: 'uiLibrary',
   },
   {
-    title: 'unibest版本',
-    dataIndex: 'unibestVersion',
-    key: 'unibestVersion',
+    title: '运行平台',
+    dataIndex: 'platforms',
+    key: 'platforms',
     customRender: ({ text, record }: { text: string; record: BeaconData }) => {
-      return record.version || '--'
+      return record.platforms?.join(', ') || '--'
     },
   },
   {
+    title: '启用i18n',
+    dataIndex: 'i18n',
+    key: 'i18n',
+    customRender: ({ text, record }: { text: string; record: BeaconData }) => {
+      return record.i18n ? 'Y' : 'N'
+    },
+  },
+  {
+    title: '启用登录策略',
+    dataIndex: 'loginStrategy',
+    key: 'loginStrategy',
+    customRender: ({ text, record }: { text: string; record: BeaconData }) => {
+      return record.loginStrategy ? 'Y' : 'N'
+    },
+  },
+  {
+    title: 'unibest版本',
+    dataIndex: 'version',
+    key: 'version',
+  },
+  {
     title: 'create-unibest版本',
-    dataIndex: 'createUnibestVersion',
-    key: 'createUnibestVersion',
+    dataIndex: 'cbVersion',
+    key: 'cbVersion',
   },
   {
     title: '操作系统',
@@ -96,11 +117,6 @@ const columns = [
     title: 'Node版本',
     dataIndex: 'nodeVersion',
     key: 'nodeVersion',
-  },
-  {
-    title: '耗时',
-    dataIndex: 'duration',
-    key: 'duration',
   },
   {
     title: '时间',
