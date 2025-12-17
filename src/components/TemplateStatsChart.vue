@@ -43,6 +43,7 @@ type UiLibraryType = (typeof UI_LIBRARY_TYPES)[number]
 interface ChartDataItem {
   uiLibrary: UiLibraryType
   count: number
+  percentage: number
 }
 
 // 状态定义
@@ -54,7 +55,7 @@ let chartInstance: echarts.ECharts | null = null
 // 移除分页相关配置，直接获取所有数据用于统计
 
 /**
- * 处理原始数据，统计各模板使用次数
+ * 处理原始数据，统计各模板使用次数及百分比
  */
 const processChartData = () => {
   // 初始化统计对象
@@ -73,16 +74,26 @@ const processChartData = () => {
   // 处理数据并合并main和base
   rawData.value.forEach(item => {
     const uiLibrary = item.uiLibrary as UiLibraryType
-    uiLibraryCount[uiLibrary]++
+    if (uiLibraryCount.hasOwnProperty(uiLibrary)) {
+      uiLibraryCount[uiLibrary]++
+    }
   })
 
-  // 转换为图表所需格式
+  // 计算总数
+  const totalCount = Object.values(uiLibraryCount).reduce(
+    (sum, count) => sum + (count ?? 0),
+    0,
+  )
+
+  // 转换为图表所需格式，并计算百分比
   chartData.value = Object.entries(uiLibraryCount).map(
     ([uiLibrary, count]) => ({
       uiLibrary,
       count,
+      percentage: totalCount > 0 ? (count / totalCount) * 100 : 0,
     }),
   )
+  console.log('chartData:', chartData.value)
 }
 
 /**
@@ -150,10 +161,19 @@ const updateChart = () => {
       {
         name: '使用次数',
         type: 'bar',
-        data: chartData.value.map(item => item.count),
+        data: chartData.value.map(item => ({
+          value: item.count,
+          percentage: item.percentage,
+        })),
         label: {
           show: true,
           position: 'top',
+          formatter: (params: any) => {
+            console.log('params:', params)
+            // 显示数量和百分比，添加防御性检查避免undefined错误
+            const percentage = params.data.percentage ?? 0
+            return `${params.data.value}（${percentage.toFixed(1)}%）`
+          },
         },
         itemStyle: {
           color: '#5470C6',
