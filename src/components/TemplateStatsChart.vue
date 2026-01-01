@@ -169,10 +169,12 @@ const updateChart = () => {
           show: true,
           position: 'top',
           formatter: (params: any) => {
-            console.log('params:', params)
+            // console.log('params:', params)
             // 显示数量和百分比，添加防御性检查避免undefined错误
             const percentage = params.data.percentage ?? 0
-            return `${params.data.value}（${percentage.toFixed(1)}%）`
+            return `${params.name}：${params.data.value}（${percentage.toFixed(
+              1,
+            )}%）`
           },
         },
         itemStyle: {
